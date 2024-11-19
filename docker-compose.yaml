@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: ./db
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: movie_app
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  user-management:
+    build:
+      context: ./user-management
+    container_name: user-management-service
+    environment:
+      DB_HOST: db
+      DB_USER: my_user
+      DB_PASSWORD: my_password
+      DB_NAME: movie_app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend-service
+    environment:
+      USER_SERVICE_URL: http://user-management-service:5000
+    ports:
+      - "5001:5001"
+    depends_on:
+      - user-management
+
+volumes:
+  db_data:

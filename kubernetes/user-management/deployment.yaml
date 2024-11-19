@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management-deployment
+  labels:
+    app: user-management
+spec:
+  replicas: 2  # Number of replicas for scalability
+  selector:
+    matchLabels:
+      app: user-management
+  template:
+    metadata:
+      labels:
+        app: user-management
+    spec:
+      containers:
+      - name: user-management
+        image: user-management-service:latest  # Replace with your Docker Hub image if needed
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: "mysql-service"  # Service name for the MySQL database
+        - name: DB_USER
+          value: "my_user"
+        - name: DB_PASSWORD
+          value: "my_password"
+        - name: DB_NAME
+          value: "movie_app"
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
