@@ -19,3 +19,6 @@ spec:
         image: your-dockerhub-username/frontend-service:latest
         ports:
         - containerPort: 80
+        env:
+        - name: API_KEY
+          value: "639639e0"

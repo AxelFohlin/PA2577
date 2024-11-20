@@ -1,8 +1,47 @@
+import os
 from flask import Flask, request, jsonify
 from db_connection import get_db_connection
 import bcrypt
 
+import jwt
+import datetime
+
 app = Flask(__name__)
+
+if os.getenv("SECRET_KEY", "no") == "no":
+    raise ValueError("No SECRET_KEY set for user-management")
+
+def generate_token(user_id, username):
+    expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    token = jwt.encode(
+        {"user_id": user_id, "username": username, "exp": expiration},
+        os.getenv("SECRET_KEY"),
+        algorithm="HS256"
+    )
+    return token
+
+def verify_token(token):
+    try:
+        # Decode the token using the secret key
+        decoded_token = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=["HS256"])
+        return decoded_token  # Return the decoded token (user info)
+    except jwt.ExpiredSignatureError:
+        return None  # Token has expired
+    except jwt.InvalidTokenError:
+        return None  # Invalid token
+
+@app.route('/verify-token')
+def verify():
+    token = request.headers.get('Authorization')
+
+    token = token.replace("Bearer ", "")
+
+    # Verify the token
+    user = verify_token(token)
+    if user:
+        return jsonify({"message": "Token is valid"}), 200
+    else:
+        return jsonify({"error": "Invalid token"}), 401
 
 # Endpoint for user registration
 @app.route('/register', methods=['POST'])
@@ -45,7 +84,12 @@ def login():
         cursor.execute("SELECT * FROM user_credentials WHERE username = %s", (username,))
         user = cursor.fetchone()
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
-            return jsonify({"message": "Login successful", "user_id": user['user_id']}), 200
+            token = generate_token(user['user_id'], user['username'])
+            # Return the token in the header and a response body with a message
+            response = jsonify({"message": "Login successful", "user_id": user['user_id']})
+            response.status_code = 200
+            response.headers['Authorization'] = f'Bearer {token}'
+            return response
         else:
             return jsonify({"error": "Invalid username or password"}), 401
     finally:

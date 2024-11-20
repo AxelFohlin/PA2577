@@ -1,3 +1,4 @@
 Flask==2.3.3                 # Web framework
 mysql-connector-python==8.0.33 # MySQL database connector
 bcrypt==4.0.1               # Password hashing
+PyJWT==2.3.0
