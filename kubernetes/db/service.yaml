@@ -11,4 +11,4 @@ spec:
   - protocol: TCP
     port: 3306
     targetPort: 3306
-  clusterIP: None # Headless service for direct Pod communication
+  clusterIP: None  # Headless service for internal communication

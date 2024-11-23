@@ -5,7 +5,7 @@ metadata:
   labels:
     app: user-management
 spec:
-  replicas: 2  # Number of replicas for scalability
+  replicas: 2  # Enable horizontal scaling
   selector:
     matchLabels:
       app: user-management
@@ -16,22 +16,15 @@ spec:
     spec:
       containers:
       - name: user-management
-        image: user-management-service:latest  # Replace with your Docker Hub image if needed
+        image: axelfohlin/pa2567:user-management  # Replace with your Docker Hub image
         ports:
         - containerPort: 5000
         env:
         - name: DB_HOST
-          value: "mysql-service"  # Service name for the MySQL database
+          value: "mysql-service"  # Internal service name
         - name: DB_USER
           value: "my_user"
         - name: DB_PASSWORD
           value: "my_password"
         - name: DB_NAME
           value: "movie_app"
-        resources:
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
-          requests:
-            memory: "128Mi"
-            cpu: "250m"

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: notification
-        image: your-dockerhub-username/notification-service:latest
+        image: axelfohlin/pa2567:notification # not yet implemented or added
         ports:
         - containerPort: 5000 # The port the container exposes
         # Optional resource limits

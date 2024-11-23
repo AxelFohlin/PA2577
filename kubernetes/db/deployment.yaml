@@ -16,18 +16,22 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: your-dockerhub-username/mysql-movie-db:latest
+        image: axelfohlin/pa2567:db  # Replace with your Docker Hub image
         ports:
         - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: "rootpassword" # Change this for production
+          value: "rootpassword"
         - name: MYSQL_DATABASE
           value: "movie_app"
+        - name: MYSQL_USER
+          value: "my_user"
+        - name: MYSQL_PASSWORD
+          value: "my_password"
         volumeMounts:
-        - mountPath: /var/lib/mysql
-          name: mysql-storage
+        - name: mysql-data
+          mountPath: /var/lib/mysql
       volumes:
-      - name: mysql-storage
+      - name: mysql-data
         persistentVolumeClaim:
           claimName: mysql-pvc

@@ -9,6 +9,6 @@ spec:
     app: user-management
   ports:
   - protocol: TCP
-    port: 5000  # Port exposed by the service
-    targetPort: 5000  # Port on the container
-  type: ClusterIP  # Internal communication within the cluster
+    port: 5000        # Internal service port
+    targetPort: 5000  # Matches containerPort in the deployment
+  type: ClusterIP     # Internal access only (frontend will call this service)

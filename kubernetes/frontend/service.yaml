@@ -9,6 +9,7 @@ spec:
     app: frontend
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
-  type: LoadBalancer
+    port: 80          # External port
+    targetPort: 5001  # Matches containerPort in deployment
+    nodePort: 30001   # Optional: specify a fixed NodePort (Minikube will use this)
+  type: NodePort # not LoadBalance since we might use minikube
