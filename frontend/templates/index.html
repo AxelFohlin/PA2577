@@ -3,38 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Movie Browser</title>
+    <link rel="stylesheet" href="/static/home.css">
 </head>
 <body>
-    <h1>User Management</h1>
+    <h1>Movie Browser</h1>
+    <div class="search-container">
+        <form method="get" action="/">
+            <input type="text" name="query" value="{{ query }}" placeholder="Search for movies...">
+            <button type="submit">Search</button>
+        </form>
+    </div>
 
-    {% if error %}
-        <div class="error">{{ error }}</div>
+    {% if movies %}
+        <div id="movie-carousel" class="carousel">
+            <div class="carousel-container">
+                {% for movie in movies %}
+                    <div class="movie-card">
+                        <img src="{{ movie.Poster if movie.Poster != 'N/A' else '/static/no-poster.jpg' }}" alt="{{ movie.Title }}">
+                        <h3>{{ movie.Title }}</h3>
+                        <p>{{ movie.Year }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <p style="text-align: center;">No movies found for "{{ query }}"</p>
     {% endif %}
 
-    <div class="form-container">
-        <h2>Register</h2>
-        <form action="/register" method="post">
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username" required><br>
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" required><br>
-            <label for="email">Email:</label><br>
-            <input type="email" id="email" name="email" required><br>
-            <button type="submit">Register</button>
-        </form>
-    </div>
-
-    <div class="form-container">
-        <h2>Login</h2>
-        <form action="/login" method="post">
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username" required><br>
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" required><br>
-            <button type="submit">Login</button>
-        </form>
-    </div>
 </body>
 </html>

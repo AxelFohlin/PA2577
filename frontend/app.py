@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, send_from_directory
 import requests
 from functools import wraps
 import logging
@@ -10,8 +10,6 @@ app.secret_key = os.getenv("SECRET_KEY", "secret")
 
 # Base URL for the User Management Microservice
 USER_SERVICE_URL = "http://user-management-service:5000"
-
-print(os.getenv("API_KEY", "no"))
 
 
 def validate_token() -> bool:
@@ -40,17 +38,46 @@ def token_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not validate_token():
-            return jsonify({"error": "Invalid or expired token!"}), 401
+            return redirect(url_for('login'))
 
         return f(*args, **kwargs)
     
     return decorated_function
 
 
+
+
+
+
+# Helper function to fetch movies from OMDb API
+def fetch_movies(query='Marvel'):
+    url = f'http://www.omdbapi.com/?s={query}&apikey={os.getenv("API_KEY")}'
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        return data.get('Search', [])
+    return []
+
 # Home page with registration and login forms
 @app.route('/')
+@token_required
 def index():
-    return render_template('index.html')
+    user_data = session.get('user_id')
+    query = request.args.get('query', 'Marvel')  # Default query
+    movies = fetch_movies(query)
+
+    return render_template('index.html', movies=movies, query=query, user_id=user_data)
+
+# Route to serve the login page
+@app.route('/login')
+def serve_login():
+    return send_from_directory('static', 'login.html')
+
+# Route to serve the register page
+@app.route('/register')
+def serve_register():
+    return send_from_directory('static', 'register.html')
 
 # Handle registration form submission
 @app.route('/register', methods=['POST'])
@@ -67,7 +94,7 @@ def register():
     })
 
     if response.status_code == 201:
-        return render_template('success.html', message="Registration successful!")
+        return redirect(url_for('index'))
     else:
         error = response.json().get("error", "Unknown error occurred")
         return render_template('index.html', error=f"Registration failed: {error}")
@@ -90,17 +117,10 @@ def login():
         session['token'] = token
         session['user_id'] = response.json().get('user_id')
 
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('index'))
     else:
         error = response.json().get("error", "Invalid username or password")
         return render_template('index.html', error=f"Login failed: {error}")
-
-
-@app.route('/dashboard')
-@token_required
-def dashboard():
-    user_data = session.get('user_id')
-    return jsonify({"message": "Welcome to the dashboard!", "user_id": user_data})
 
 
 if __name__ == '__main__':
