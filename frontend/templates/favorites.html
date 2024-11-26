@@ -5,23 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Favorite Movies</title>
     <link rel="stylesheet" href="/static/home.css">
+    <link rel="stylesheet" href="/static/movie_detail.css">
 </head>
 <body>
-    <h1>Your Favorite Movies</h1>
-    <div class="nav-bar">
-        <a href="/">Home</a>
-        <a href="/favorites">Favorites</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </div>
+    <header>
+        <h1>Movie Browser</h1>
+        <div class="nav-bar">
+            <a href="/">Home</a>
+            <a href="/favorites">Favorites</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
 
     {% if movies %}
         <div id="movie-carousel" class="carousel">
             <div class="carousel-container">
                 {% for movie in movies %}
                     <div class="movie-card">
-                        <img src="{{ movie.Poster if movie.Poster != 'N/A' else '/static/no-poster.jpg' }}" alt="{{ movie.Title }}">
-                        <h3>{{ movie.Title }}</h3>
-                        <p>{{ movie.Year }}</p>
+                        <a href="{{ url_for('movie', movie_id=movie.imdbID) }}">
+                            <img src="{{ movie.Poster if movie.Poster != 'N/A' else '/static/no-poster.jpg' }}" alt="{{ movie.Title }}">
+                            <h3>{{ movie.Title }}</h3>
+                            <p>{{ movie.Year }}</p>
+                        </a>
                         {% if movie.imdbID in favorite_movies %}
                             <!-- Filled heart button if already favorited -->
                             <button 

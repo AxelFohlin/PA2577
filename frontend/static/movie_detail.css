@@ -1,0 +1,95 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.nav-bar {
+    margin-top: 10px;
+}
+
+.nav-bar a {
+    color: #fff;
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+.nav-bar a:hover {
+    text-decoration: underline;
+}
+
+/* Back Button at the Top-Left */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.back-btn {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background-color: #555;
+}
+
+/* Movie Detail Container */
+.movie-detail-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.movie-image {
+    flex: 1;
+    max-width: 300px;
+    margin-right: 20px;
+}
+
+.movie-poster {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.movie-info {
+    flex: 2;
+    max-width: 700px;
+}
+
+.movie-info h2 {
+    margin-top: 0;
+}
+
+.movie-info p {
+    margin: 10px 0;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    margin-top: 30px;
+}

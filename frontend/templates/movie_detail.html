@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.Title }} - Movie Details</title>
+    <link rel="stylesheet" href="/static/movie_detail.css">  <!-- Your CSS file -->
+</head>
+<body>
+    <header>
+        <h1>{{ movie.Title }}</h1>
+        <div class="nav-bar">
+            <a href="/">Home</a>
+            <a href="/favorites">Favorites</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+
+    <!-- Go Back button moved to top left -->
+    <div class="back-button">
+        <button onclick="window.history.back()" class="back-btn">Go Back</button>
+    </div>
+
+    <div class="movie-detail-container">
+        <div class="movie-image">
+            <img src="{{ movie.Poster }}" alt="Poster" class="movie-poster">
+        </div>
+
+        <div class="movie-info">
+            <h2>Details</h2>
+            <p><strong>Year:</strong> {{ movie.Year }}</p>
+            <p><strong>Director:</strong> {{ movie.Director }}</p>
+            <p><strong>Actors:</strong> {{ movie.Actors }}</p>
+            <p><strong>Plot:</strong> {{ movie.Plot }}</p>
+            <p><strong>IMDB Rating:</strong> {{ movie.imdbRating }}</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -68,6 +68,18 @@ def fetch_movie_by_id(imdb_id):
         return data
     return None
 
+@app.route('/movie/<movie_id>')
+def movie(movie_id):
+    # Fetch movie details using the movie_id (imdbID)
+    response = requests.get(f'http://www.omdbapi.com/?i={movie_id}&apikey={os.getenv("API_KEY")}')
+    movie_data = response.json()
+
+    if movie_data.get('Response') == 'True':
+        return render_template('movie_detail.html', movie=movie_data)
+    else:
+        return f"Movie not found.", 404
+
+
 @app.route('/favorite', methods=['POST'])
 @token_required
 def favorite_movie():
