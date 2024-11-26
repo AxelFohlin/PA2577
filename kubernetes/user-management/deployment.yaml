@@ -20,11 +20,30 @@ spec:
         ports:
         - containerPort: 5000
         env:
+        # Load non-sensitive variables from ConfigMap
         - name: DB_HOST
-          value: "mysql-service"  # Points to the MySQL service
-        - name: DB_USER
-          value: "my_user"
-        - name: DB_PASSWORD
-          value: "my_password"
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HOST
         - name: DB_NAME
-          value: "movie_app"
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_NAME
+        # Load sensitive variables from Secret
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: MYSQL_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: MYSQL_PASSWORD
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: SECRET_KEY

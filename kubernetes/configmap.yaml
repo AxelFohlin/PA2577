@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  DB_HOST: mysql-service      # Existing value
+  DB_NAME: movie_app          # Existing value
+  MYSQL_DATABASE: movie_app   # New value for MySQL database
+  USER_SERVICE_URL: http://user-management-service:5000

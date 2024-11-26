@@ -20,5 +20,15 @@ spec:
         ports:
         - containerPort: 5001
         env:
+        # Load non-sensitive variables from ConfigMap
         - name: USER_SERVICE_URL
-          value: "http://user-management-service:5000"  # Points to the user-management service
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: USER_SERVICE_URL
+        # Load sensitive variables from Secret
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: API_KEY
