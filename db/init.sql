@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS user_credentials (
 -- Create the user_movies table
 CREATE TABLE IF NOT EXISTS user_movies (
     user_id INT,                            -- Foreign key to user_credentials
-    favorites TEXT,                         -- Comma-separated list of favorite movies
-    PRIMARY KEY (user_id),
+    movie_id VARCHAR(50),                         -- IMDb IDs of favorite movie
+    PRIMARY KEY (user_id, movie_id),
     FOREIGN KEY (user_id) REFERENCES user_credentials(user_id)
 );
 
@@ -26,6 +26,6 @@ INSERT INTO user_credentials (username, password, email) VALUES
 ('jane_smith', 'hashed_password2', 'jane@example.com');
 
 -- Insert sample data into user_movies
-INSERT INTO user_movies (user_id, favorites) VALUES
-(1, 'The Matrix,Inception'),
-(2, 'Titanic,The Notebook');
+-- INSERT INTO user_movies (user_id, favorites) VALUES
+-- (1, 'The Matrix,Inception'),
+-- (2, 'Titanic,The Notebook');

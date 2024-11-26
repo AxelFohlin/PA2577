@@ -3,22 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Browser</title>
+    <title>Your Favorite Movies</title>
     <link rel="stylesheet" href="/static/home.css">
 </head>
 <body>
-    <h1>Movie Browser</h1>
+    <h1>Your Favorite Movies</h1>
     <div class="nav-bar">
         <a href="/">Home</a>
         <a href="/favorites">Favorites</a>
         <a href="{{ url_for('logout') }}">Logout</a>
-    </div>
-
-    <div class="search-container">
-        <form method="get" action="/search">
-            <input type="text" name="query" value="{{ query }}" placeholder="Search for movies...">
-            <button type="submit">Search</button>
-        </form>
     </div>
 
     {% if movies %}
@@ -49,7 +42,7 @@
             </div>
         </div>
     {% else %}
-        <p style="text-align: center;">No movies found for "{{ query }}"</p>
+        <p style="text-align: center;">You don't have any favorite movies yet!</p>
     {% endif %}
 
 <script>
@@ -85,6 +78,5 @@
         .catch(error => console.log('Error:', error));
     }
 </script>
-
 </body>
 </html>

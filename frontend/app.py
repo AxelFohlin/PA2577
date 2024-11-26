@@ -59,25 +59,85 @@ def fetch_movies(query='Marvel'):
         return data.get('Search', [])
     return []
 
+def fetch_movie_by_id(imdb_id):
+    url = f'http://www.omdbapi.com/?i={imdb_id}&apikey={os.getenv("API_KEY")}'
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    return None
+
+@app.route('/favorite', methods=['POST'])
+@token_required
+def favorite_movie():
+    data = request.json
+    user_id = data.get('user_id')
+    movie_id = data.get('movie_id')
+    action = data.get('action')
+
+    if not user_id or not movie_id or not action:
+        return jsonify({"message": "Missing required fields"}), 400
+
+    response = requests.post(f"{USER_SERVICE_URL}/favorite", json={
+        "user_id": user_id,
+        "movie_id": movie_id,
+        "action": action
+    })
+    app.logger.debug(f"Response from user-management-service: {response.json()}, {response.status_code}")
+    if response.status_code != 200:
+        return jsonify({"message": "Failed to add movie to favorites"}), 500
+
+    return jsonify({"message": "Movie added to favorites!"}), 200
+
+@app.route('/favorites')
+@token_required
+def favorites():
+    user_id = session.get('user_id')
+    response = requests.get(f"{USER_SERVICE_URL}/favorites/{user_id}")
+
+    if response.status_code == 200:
+        movie_ids = response.json()
+
+        movies = []
+        for imdb_id in movie_ids:
+            movie = fetch_movie_by_id(imdb_id)
+            if movie:
+                movies.append(movie)
+
+        return render_template('favorites.html', movies=movies, user_id=user_id, favorite_movies=movie_ids)
+    else:
+        return jsonify({"message": "Failed to fetch favorites"}), 500
+
 # Home page with registration and login forms
 @app.route('/')
 @token_required
 def index():
-    user_data = session.get('user_id')
+    user_id = session.get('user_id')
     query = request.args.get('query', 'Marvel')  # Default query
     movies = fetch_movies(query)
+    response = requests.get(f"{USER_SERVICE_URL}/favorites/{user_id}")
+    favorite_movies = response.json() if response.status_code == 200 else []
 
-    return render_template('index.html', movies=movies, query=query, user_id=user_data)
+    app.logger.debug(f"Favorite movies: {favorite_movies}")
+
+    return render_template('index.html', movies=movies, query=query, user_id=user_id, favorite_movies=favorite_movies)
 
 # Route to serve the login page
 @app.route('/login')
 def serve_login():
-    return send_from_directory('static', 'login.html')
+    return render_template('login.html')
 
 # Route to serve the register page
 @app.route('/register')
 def serve_register():
-    return send_from_directory('static', 'register.html')
+    return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    session.pop('token', None)
+    return redirect(url_for('login'))
 
 # Handle registration form submission
 @app.route('/register', methods=['POST'])
@@ -97,7 +157,7 @@ def register():
         return redirect(url_for('index'))
     else:
         error = response.json().get("error", "Unknown error occurred")
-        return render_template('index.html', error=f"Registration failed: {error}")
+        return render_template('register.html', error=f"Registration failed: {error}")
 
 # Handle login form submission
 @app.route('/login', methods=['POST'])
@@ -120,7 +180,7 @@ def login():
         return redirect(url_for('index'))
     else:
         error = response.json().get("error", "Invalid username or password")
-        return render_template('index.html', error=f"Login failed: {error}")
+        return render_template('login.html', error=f"Login failed: {error}")
 
 
 if __name__ == '__main__':

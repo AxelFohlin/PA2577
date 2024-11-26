@@ -43,6 +43,62 @@ def verify():
     else:
         return jsonify({"error": "Invalid token"}), 401
 
+@app.route('/favorite', methods=['POST'])
+def toggle_favorite():
+    data = request.json
+    user_id = data.get('user_id')
+    movie_id = data.get('movie_id')
+    action = data.get('action')
+
+    db = get_db_connection()
+    cursor = db.cursor()
+    try:
+        if action == 'add':
+            # Add movie to user's favorites
+            cursor.execute(
+                "INSERT INTO user_movies (user_id, movie_id) VALUES (%s, %s)",
+                (user_id, movie_id)
+            )
+            db.commit()
+            return jsonify({"message": "Movie favorited successfully"}), 200
+        elif action == 'remove':
+            # Remove movie from user's favorites
+            cursor.execute(
+                "DELETE FROM user_movies WHERE user_id = %s AND movie_id = %s",
+                (user_id, movie_id)
+            )
+            db.commit()
+            return jsonify({"message": "Movie unfavorited successfully"}), 200
+        else:
+            return jsonify({"error": "Invalid action"}), 400
+    except Exception as e:
+        db.rollback()
+        return jsonify({"error": str(e)}), 400
+    finally:
+        cursor.close()
+        db.close()
+
+@app.route('/favorites/<int:user_id>')
+def get_user_favorites(user_id):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            "SELECT movie_id FROM user_movies WHERE user_id = %s", (user_id,)
+        )
+        favorite_movies = cursor.fetchall()
+    
+        favorite_movie_ids = [movie['movie_id'] for movie in favorite_movies]
+
+        return jsonify(favorite_movie_ids), 200
+    except Exception as e:
+        # Handle errors and return a failure response
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        db.close()
+
 # Endpoint for user registration
 @app.route('/register', methods=['POST'])
 def register():
