@@ -1,5 +1,5 @@
 # Use the official MySQL image
-FROM mysql:8.0
+FROM mysql:8.0.23
 
 # Copy the initialization script into the container
 COPY init.sql /docker-entrypoint-initdb.d/

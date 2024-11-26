@@ -24,8 +24,3 @@ CREATE TABLE IF NOT EXISTS user_movies (
 INSERT INTO user_credentials (username, password, email) VALUES
 ('john_doe', 'hashed_password1', 'john@example.com'),
 ('jane_smith', 'hashed_password2', 'jane@example.com');
-
--- Insert sample data into user_movies
--- INSERT INTO user_movies (user_id, favorites) VALUES
--- (1, 'The Matrix,Inception'),
--- (2, 'Titanic,The Notebook');
