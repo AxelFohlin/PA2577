@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /mnt/data/mysql  # Local directory in Minikube
+    path: /mnt/data/mysql  # Path on Docker Desktop VM
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

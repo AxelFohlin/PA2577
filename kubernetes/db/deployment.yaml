@@ -5,7 +5,7 @@ metadata:
   labels:
     app: mysql
 spec:
-  replicas: 1
+  replicas: 1  # Single replica for MySQL
   selector:
     matchLabels:
       app: mysql
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: axelfohlin/pa2567:db  # Replace with your Docker Hub image
+        image: axelfohlin/pa2577:db  # Docker Hub image
         ports:
         - containerPort: 3306
         env:

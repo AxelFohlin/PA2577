@@ -5,7 +5,7 @@ metadata:
   labels:
     app: frontend
 spec:
-  replicas: 3  # Enable horizontal scaling
+  replicas: 3  # Horizontal scaling
   selector:
     matchLabels:
       app: frontend
@@ -16,9 +16,9 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: axelfohlin/pa2567:frontend  # Replace with your Docker Hub image
+        image: axelfohlin/pa2577:frontend  # Docker Hub image
         ports:
         - containerPort: 5001
         env:
         - name: USER_SERVICE_URL
-          value: "http://user-management-service:5000"  # Internal URL for the backend
+          value: "http://user-management-service:5000"  # Points to the user-management service

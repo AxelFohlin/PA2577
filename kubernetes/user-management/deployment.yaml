@@ -5,7 +5,7 @@ metadata:
   labels:
     app: user-management
 spec:
-  replicas: 2  # Enable horizontal scaling
+  replicas: 2  # Horizontal scaling
   selector:
     matchLabels:
       app: user-management
@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
       - name: user-management
-        image: axelfohlin/pa2567:user-management  # Replace with your Docker Hub image
+        image: axelfohlin/pa2577:user-management  # Docker Hub image
         ports:
         - containerPort: 5000
         env:
         - name: DB_HOST
-          value: "mysql-service"  # Internal service name
+          value: "mysql-service"  # Points to the MySQL service
         - name: DB_USER
           value: "my_user"
         - name: DB_PASSWORD
