@@ -91,11 +91,12 @@ def favorite_movie():
     if not user_id or not movie_id or not action:
         return jsonify({"message": "Missing required fields"}), 400
 
+    headers = {"Authorization": f"Bearer {session.get('token')}"}
     response = requests.post(f"{USER_SERVICE_URL}/favorite", json={
         "user_id": user_id,
         "movie_id": movie_id,
         "action": action
-    })
+    }, headers=headers)
     app.logger.debug(f"Response from user-management-service: {response.json()}, {response.status_code}")
     if response.status_code != 200:
         return jsonify({"message": "Failed to add movie to favorites"}), 500
@@ -106,7 +107,8 @@ def favorite_movie():
 @token_required
 def favorites():
     user_id = session.get('user_id')
-    response = requests.get(f"{USER_SERVICE_URL}/favorites/{user_id}")
+    headers = {"Authorization": f"Bearer {session.get('token')}"}
+    response = requests.get(f"{USER_SERVICE_URL}/favorites/{user_id}", headers=headers)
 
     if response.status_code == 200:
         movie_ids = response.json()
@@ -128,7 +130,8 @@ def index():
     user_id = session.get('user_id')
     query = request.args.get('query', 'Marvel')  # Default query
     movies = fetch_movies(query)
-    response = requests.get(f"{USER_SERVICE_URL}/favorites/{user_id}")
+    headers = {"Authorization": f"Bearer {session.get('token')}"}
+    response = requests.get(f"{USER_SERVICE_URL}/favorites/{user_id}", headers=headers)
     favorite_movies = response.json() if response.status_code == 200 else []
 
     app.logger.debug(f"Favorite movies: {favorite_movies}")

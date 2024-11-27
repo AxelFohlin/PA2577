@@ -2,11 +2,14 @@ import os
 from flask import Flask, request, jsonify
 from db_connection import get_db_connection
 import bcrypt
+from functools import wraps
+import logging
 
 import jwt
 import datetime
 
 app = Flask(__name__)
+app.logger.setLevel(logging.DEBUG)
 
 if os.getenv("SECRET_KEY", "no") == "no":
     raise ValueError("No SECRET_KEY set for user-management")
@@ -21,6 +24,7 @@ def generate_token(user_id, username):
     return token
 
 def verify_token(token):
+    app.logger.debug(f"Verifying token: {token}")
     try:
         # Decode the token using the secret key
         decoded_token = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=["HS256"])
@@ -43,7 +47,20 @@ def verify():
     else:
         return jsonify({"error": "Invalid token"}), 401
 
+def token_required(f):
+    """Decorator to require a valid JWT token for protected routes."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not verify_token(request.headers.get('Authorization').replace("Bearer ", "")):
+            return jsonify({"error": "Invalid token"}), 401
+
+        return f(*args, **kwargs)
+    
+    return decorated_function
+
+
 @app.route('/favorite', methods=['POST'])
+@token_required
 def toggle_favorite():
     data = request.json
     user_id = data.get('user_id')
@@ -79,6 +96,7 @@ def toggle_favorite():
         db.close()
 
 @app.route('/favorites/<int:user_id>')
+@token_required
 def get_user_favorites(user_id):
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
