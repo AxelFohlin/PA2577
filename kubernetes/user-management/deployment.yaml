@@ -17,6 +17,7 @@ spec:
       containers:
       - name: user-management
         image: axelfohlin/pa2577:user-management  # Docker Hub image
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         env:

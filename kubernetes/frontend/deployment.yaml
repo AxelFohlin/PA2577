@@ -17,6 +17,7 @@ spec:
       containers:
       - name: frontend
         image: axelfohlin/pa2577:frontend  # Docker Hub image
+        imagePullPolicy: Always
         ports:
         - containerPort: 5001
         env:
