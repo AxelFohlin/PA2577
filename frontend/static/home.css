@@ -69,7 +69,6 @@ button[type="submit"] {
     color: #666;
 }
 
-/* Base button style */
 .heart-button {
     background-color: transparent;
     border: 2px solid #f44336;
@@ -81,10 +80,9 @@ button[type="submit"] {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* "Like" button style */
 .heart-button.favorite {
     background-color: transparent;
-    color: #f44336; /* Red color for the like state */
+    color: #f44336;
 }
 
 .heart-button.favorite:hover {
@@ -92,10 +90,9 @@ button[type="submit"] {
     color: white;
 }
 
-/* "Unlike" button style */
 .heart-button.unfavorite {
     background-color: transparent;
-    color: #9e9e9e; /* Gray color for the unlike state */
+    color: #9e9e9e;
 }
 
 .heart-button.unfavorite:hover {

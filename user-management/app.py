@@ -28,11 +28,11 @@ def verify_token(token):
     try:
         # Decode the token using the secret key
         decoded_token = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=["HS256"])
-        return decoded_token  # Return the decoded token (user info)
+        return decoded_token
     except jwt.ExpiredSignatureError:
-        return None  # Token has expired
+        return None
     except jwt.InvalidTokenError:
-        return None  # Invalid token
+        return None
 
 @app.route('/verify-token')
 def verify():
@@ -111,24 +111,21 @@ def get_user_favorites(user_id):
 
         return jsonify(favorite_movie_ids), 200
     except Exception as e:
-        # Handle errors and return a failure response
         return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
         db.close()
 
-# Endpoint for user registration
 @app.route('/register', methods=['POST'])
 def register():
+    """Endpoint for user registration"""
     data = request.get_json()
     username = data['username']
     password = data['password']
     email = data['email']
 
-    # Hash the password
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-    # Insert user into the database
     db = get_db_connection()
     cursor = db.cursor()
     try:
@@ -144,9 +141,9 @@ def register():
         cursor.close()
         db.close()
 
-# Endpoint for user login
 @app.route('/login', methods=['POST'])
 def login():
+    """Endpoint for user login"""
     data = request.get_json()
     username = data['username']
     password = data['password']

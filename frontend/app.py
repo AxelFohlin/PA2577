@@ -49,8 +49,8 @@ def token_required(f):
 
 
 
-# Helper function to fetch movies from OMDb API
 def fetch_movies(query='Marvel'):
+    """Helper function to fetch movies from OMDb API"""
     url = f'http://www.omdbapi.com/?s={query}&apikey={os.getenv("API_KEY")}'
     response = requests.get(url)
     
@@ -70,7 +70,7 @@ def fetch_movie_by_id(imdb_id):
 
 @app.route('/movie/<movie_id>')
 def movie(movie_id):
-    # Fetch movie details using the movie_id (imdbID)
+    """Fetch movie details using the movie_id (imdbID)"""
     response = requests.get(f'http://www.omdbapi.com/?i={movie_id}&apikey={os.getenv("API_KEY")}')
     movie_data = response.json()
 
@@ -123,10 +123,10 @@ def favorites():
     else:
         return jsonify({"message": "Failed to fetch favorites"}), 500
 
-# Home page with registration and login forms
 @app.route('/')
 @token_required
 def index():
+    """Home page with registration and login forms"""
     user_id = session.get('user_id')
     query = request.args.get('query', 'Marvel')  # Default query
     movies = fetch_movies(query)
@@ -138,14 +138,14 @@ def index():
 
     return render_template('index.html', movies=movies, query=query, user_id=user_id, favorite_movies=favorite_movies)
 
-# Route to serve the login page
 @app.route('/login')
 def serve_login():
+    """Route to serve the login page"""
     return render_template('login.html')
 
-# Route to serve the register page
 @app.route('/register')
 def serve_register():
+    """Route to serve the register page"""
     return render_template('register.html')
 
 @app.route('/logout')
@@ -154,14 +154,13 @@ def logout():
     session.pop('token', None)
     return redirect(url_for('login'))
 
-# Handle registration form submission
 @app.route('/register', methods=['POST'])
 def register():
+    """Handle registration form submission"""
     username = request.form['username']
     password = request.form['password']
     email = request.form['email']
 
-    # Send registration data to the User Management Microservice
     response = requests.post(f"{USER_SERVICE_URL}/register", json={
         "username": username,
         "password": password,
@@ -174,9 +173,9 @@ def register():
         error = response.json().get("error", "Unknown error occurred")
         return render_template('register.html', error=f"Registration failed: {error}")
 
-# Handle login form submission
 @app.route('/login', methods=['POST'])
 def login():
+    """Handle login form submission"""
     username = request.form['username']
     password = request.form['password']
 
